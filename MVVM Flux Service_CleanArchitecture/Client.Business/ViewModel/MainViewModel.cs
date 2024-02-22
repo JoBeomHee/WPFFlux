@@ -1,6 +1,8 @@
-﻿using Client.Business.Domain.ViewInterface;
+﻿using Client.Business.Domain.Action;
+using Client.Business.Domain.ViewInterface;
 using Client.Domain.Count;
 using Client.Domain.Count.Action;
+using Client.Domain.Theme;
 using DevExpress.Mvvm.CodeGenerators;
 using Fluxor;
 
@@ -13,16 +15,18 @@ public partial class MainViewModel
     private readonly IStore Store;
     public readonly IDispatcher Dispatcher;
     public readonly IState<CountState> CountState;
+    public readonly IState<ThemeState> ThemeState;
 
     [GenerateProperty]
     int _Count;
 
-    public MainViewModel(IServiceProvider service, IStore store, IDispatcher dispatcher, IState<CountState> counterState)
+    public MainViewModel(IServiceProvider service, IStore store, IDispatcher dispatcher, IState<CountState> counterState, IState<ThemeState> themeState)
     {
         _service = service;
         Store = store;
         Dispatcher = dispatcher;
         CountState = counterState;
+        ThemeState = themeState;
 
         Initialize();
     }
@@ -45,6 +49,12 @@ public partial class MainViewModel
     {
         var view = _service.GetService(typeof(IView2Dialog)) as IView2Dialog;
         view.Show();
+    }
+
+    [GenerateCommand]
+    void ThemeChanegd()
+    {
+        Dispatcher.Dispatch(new ToggleThemeAction());
     }
 
     #region Initialize
